@@ -117,15 +117,22 @@ cdata = zeros(10,10,62);
 for i = 1:100
     cdata(vine(i).X + 0.5,vine(i).Y + 0.5,:) = vine(i).I(1:24:1465);
 end
+figure
 axis tight manual
 ax = gca;
 ax.NextPlot = 'replaceChildren';
-figure
+
 M(62) = struct('cdata',[],'colormap',[]);
-for mapDay = 0:61
+v = VideoWriter('heatmap_movie.avi');
+v.FrameRate = 5;
+open(v)
+for mapDay = 1:61
     h = heatmap(cdata(:,:,mapDay+1),'CellLabelColor','none','GridVisible','off');
     colormap(h,"parula")
+    txt = sprintf('Field on Day %d',mapDay);
+    title(txt)
     drawnow
-    M(j) = getframe;
+    M(mapDay+1) = getframe(gcf);
+    writeVideo(v,M(mapDay+1));
 end
-movie(M)
+close(v)
