@@ -13,8 +13,8 @@ global NpX NpY Nsteps
 % set simulation constants
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Global domain constants (apply everywhere) %%%%%%%%%%%%%%%%%
-NpX = 50;     %number of plants in the X-direction
-NpY = 50;     %number of plants in the Y-direction
+NpX = 10;     %number of plants in the X-direction
+NpY = 10;     %number of plants in the Y-direction
 Nsteps = length(T); %number of time steps for integration
 
 %%%%%%%%%%%%%%%%%%%%%%%%% Global plant parameters %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -35,7 +35,7 @@ eta   = 1;      %release fraction scale factor
 kappa = 0.75;   %release fraction scale factor   
 xi    = -2.0;   %release fraction offset
 Gamma = 1e-2;   %spore production from Calonnec et al 2009 approx scaled as surface area coverage
-alpha = 0.314;  %spore production 2nd factor
+alpha = 0.314/10000;  %spore production 2nd factor
 
 %%%%%%%%%%%%%%%%%% Initialize individual Plants (vines) %%%%%%%%%%%%%%%%%%%
 % Here we will use a structure (vine) to store all the different variables
@@ -80,17 +80,33 @@ toc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %Calculate stats for entire domain at each time step
 S_ave = mean([vine.S],2);
+I_ave = mean([vine.I],2);
+P_ave = mean([vine.P],2)./5000;
+B_ave = mean([vine.B],2)./5000;
+L_ave = mean([vine.L],2);
+R_ave = mean([vine.R],2);
+E_ave = mean([vine.E],2);
+F_ave = mean([vine.F],2);
 %INSERT YOUR CODE HERE to fill in the rest...
 
 %%%%%%%%%%%%%%%%%%%%% Plot the average of the field %%%%%%%%%%%%%%%%%%%%%%%
 FSize = 14; %fontsize for plots
-figure;plot(tspan,S_ave,'-k','LineWidth',2);
-legend({'Susceptible'},'Location','NorthWest');
+figure;
+hold on;
+plot(tspan,P_ave,'k-','LineWidth',2);
+plot(tspan,B_ave,'k--','LineWidth',2);
+plot(tspan,S_ave,'m-.','LineWidth',2);
+plot(tspan,L_ave,'g--','LineWidth',2);
+plot(tspan,I_ave,'b:','LineWidth',2);
+plot(tspan,R_ave,'r-.','LineWidth',2);
+plot(tspan,E_ave,'r:','LineWidth',2);
+plot(tspan,F_ave,'y--','LineWidth',2);
+legend({'Total Population','Berry Population','Susceptible','Latent','Infected','Removed','External','Spores'},'Location','NorthWest');
 xlabel('time (days)','Fontsize',FSize);
 ylabel('Population (fraction of initial)','Fontsize',FSize)
 title('average epidemic')
 set(gca,'Fontsize',FSize,'Xlim',[0 61]); 
-box on;grid on
+box on;grid on;axis([0,61,0,2]);
 
 %INSERT YOUR CODE HERE to add plotting of other elements and optional
 %things like movies
