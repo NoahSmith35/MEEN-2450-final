@@ -107,6 +107,25 @@ ylabel('Population (fraction of initial)','Fontsize',FSize)
 title('average epidemic')
 set(gca,'Fontsize',FSize,'Xlim',[0 61]); 
 box on;grid on;axis([0,61,0,2]);
+hold off
 
 %INSERT YOUR CODE HERE to add plotting of other elements and optional
 %things like movies
+
+
+cdata = zeros(10,10,62);
+for i = 1:100
+    cdata(vine(i).X + 0.5,vine(i).Y + 0.5,:) = vine(i).I(1:24:1465);
+end
+axis tight manual
+ax = gca;
+ax.NextPlot = 'replaceChildren';
+figure
+M(62) = struct('cdata',[],'colormap',[]);
+for mapDay = 0:61
+    h = heatmap(cdata(:,:,mapDay+1),'CellLabelColor','none','GridVisible','off');
+    colormap(h,"parula")
+    drawnow
+    M(j) = getframe;
+end
+movie(M)
