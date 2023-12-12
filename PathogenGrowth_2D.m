@@ -41,7 +41,7 @@
 % tspan (days to simulate array);
 % output: S,L,I,R,P,E,time (vector of simulation times), and B
 
-function [vine] = PathogenGrowth_2D(vine,beta_max,mu_L_target,mu_I,A,...
+function [vine,cost,infects,tFound] = PathogenGrowth_2D(vine,beta_max,mu_L_target,mu_I,A,...
     eta,kappa,xi,Gamma,alpha,T,U,V,tspan)
 
 %declare global variables
@@ -60,7 +60,8 @@ p{9} = kappa;     %release fraction scale factor
 p{10}= xi;       %release fraction offset
 p{11}= Gamma;    %spore production multiple
 p{12}= alpha;   %spore production 2nd factor
-
+cost = 0;
+findSwitch = 0;
 % declare function handles
 odefun = @(t,y,e,g) SLIRPE_model(t,y,e,g,p);
 
@@ -146,19 +147,57 @@ for t=2:Nsteps
     %%%        RECOMMENDED LOCATION FOR YOUR SCOUTING ROUTINE           %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    
+    if mod(t-1,24) == 0 && findSwitch ==0
+        speed = 0.004444;
+        amt = 5;
+        [infects,infectsFound] = Scouting(speed,amt,vine,t,2);
+        cost = cost + amt*100;
+        if (t-1)/24 > 10
+            cost = cost + 1000;
+        end
+        if infectsFound == 1 && findSwitch == 0
+            tFound = t;
+            findSwitch = 1;
+            disp('Infection Found')
+        end
+    end
 end
 
 end
 
 
 function [y] = TimeInt(odefun,t,dt,y0,DepFlux_sum_cnt,vine_mu_L)
-    
     y1 = odefun(t-1,y0,DepFlux_sum_cnt,vine_mu_L);
     y2 = odefun(t,y0+y1*dt,DepFlux_sum_cnt,vine_mu_L);
-    y = y0 + ((y2+y1)/2)*(dt);
-
-
-               
+    y = y0 + ((y2+y1)/2)*(dt);           
 end
             
+function [infects,infectsFound] = Scouting(speed,amt,vine,t,opts)
+    global NpX NpY
+    infects = zeros(NpX,NpY);
+    infectsFound = 0;
+    DetectSize = 20*speed;
+    Npnts = floor(speed*3600);
+    distMax = speed*3600;
+    distUsed = 0;
+    currLoc = [0,0];
+%     if opts == 1
+%         gridSize = floor(sqrt(Npnts));
+%         for i = 1:gridSize:NpX
+%             for j = 1:gridSize:NpY
+    if opts == 2
+        for a = 1:amt
+            while distUsed < distMax && infectsFound ~= 1
+                RandSearch = randi(NpX*NpY);
+                distUsed = distUsed + sqrt((vine(RandSearch).X - currLoc(1))^2 + (vine(RandSearch).Y - currLoc(2))^2);
+                if vine(RandSearch).I(t) >= DetectSize
+                    infects(vine(RandSearch).X+0.5,vine(RandSearch).Y+0.5) = 1;
+                    infectsFound = 1;
+                    return
+                end
+                currLoc = [vine(RandSearch).X,vine(RandSearch).Y];
+            end
+        end
+    end
+end
