@@ -71,7 +71,7 @@ vine(RandV).L(1) = 0.25^2/4*pi/A;
 
 % call the pathogen function
 tic
-[vine]=PathogenGrowth_2D(vine,beta_max,mu_L_min,mu_I,A,eta,kappa,xi,Gamma,...
+[vine,cost,infects,tFound]=PathogenGrowth_2D(vine,beta_max,mu_L_min,mu_I,A,eta,kappa,xi,Gamma,...
     alpha,T,U,V,tspan);
 toc 
 
@@ -112,7 +112,9 @@ hold off
 %INSERT YOUR CODE HERE to add plotting of other elements and optional
 %things like movies
 
-
+% if NpX == 50 && NpY == 50
+%     save("VineData.mat","vine")
+% end
 cdata = zeros(10,10,62);
 for i = 1:100
     cdata(vine(i).X + 0.5,vine(i).Y + 0.5,:) = vine(i).I(1:24:1465);
