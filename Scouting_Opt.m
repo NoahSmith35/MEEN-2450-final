@@ -38,10 +38,13 @@ for i = 1:loops
     end
 end
 % disp(optTFound/24)
-meanMinCost = mean(minCostAll)
-meanOptAmt = mean(optAmtAll)
-meanOptSpd = mean(optSpdAll)
-meanTFound = mean(optTFoundAll)
+meanMinCost = mean(minCostAll);
+meanOptAmt = mean(optAmtAll);
+meanOptSpd = mean(optSpdAll);
+meanTFound = mean(optTFoundAll);
+medCost = median(minCostAll)
+medAmt = median(optAmtAll)
+medSpd = median(optSpdAll)
 % figure
 % scatter(optAmtAll,optSpdAll)
 
