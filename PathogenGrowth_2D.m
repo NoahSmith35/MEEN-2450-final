@@ -41,7 +41,7 @@
 % tspan (days to simulate array);
 % output: S,L,I,R,P,E,time (vector of simulation times), and B
 
-function [vine,cost,infects,tFound] = PathogenGrowth_2D(vine,beta_max,mu_L_target,mu_I,A,...
+function [vine] = PathogenGrowth_2D(vine,beta_max,mu_L_target,mu_I,A,...
     eta,kappa,xi,Gamma,alpha,T,U,V,tspan)
 
 %declare global variables
@@ -148,20 +148,20 @@ for t=2:Nsteps
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    if mod(t-1,24) == 0 && findSwitch ==0
-        speed = 0.004444;
-        amt = 5;
-        [infects,infectsFound] = Scouting(speed,amt,vine,t,2);
-        cost = cost + amt*100;
-        if (t-1)/24 > 10
-            cost = cost + 1000;
-        end
-        if infectsFound == 1 && findSwitch == 0
-            tFound = t;
-            findSwitch = 1;
-            disp('Infection Found')
-        end
-    end
+%     if mod(t-1,24) == 0 && findSwitch ==0
+%         speed = 0.004444;
+%         amt = 5;
+%         [infects,infectsFound] = Scouting(speed,amt,vine,t,2);
+%         cost = cost + amt*100;
+%         if (t-1)/24 > 10
+%             cost = cost + 1000;
+%         end
+%         if infectsFound == 1 && findSwitch == 0
+%             tFound = t;
+%             findSwitch = 1;
+%             disp('Infection Found')
+%         end
+%     end
 end
 
 end
