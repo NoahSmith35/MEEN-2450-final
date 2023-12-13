@@ -71,7 +71,7 @@ vine(RandV).L(1) = 0.25^2/4*pi/A;
 
 % call the pathogen function
 tic
-[vine]=PathogenGrowth_2D(vine,beta_max,mu_L_min,mu_I,A,eta,kappa,xi,Gamma,...
+[vine,infects,infectsFound,tFound,cost]=PathogenGrowth_2D(vine,beta_max,mu_L_min,mu_I,A,eta,kappa,xi,Gamma,...
     alpha,T,U,V,tspan);
 toc 
 
