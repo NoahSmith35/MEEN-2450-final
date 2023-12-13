@@ -3,23 +3,32 @@ load("VineData.mat")
 load("EnvironmentalForcing.mat")
 findSwitch = 0;
 cost = 0;
-for t = 1:length(tspan) 
-    if mod(t,24) == 0 && findSwitch ==0
-        speed = 0.005;
-        amt = 6;
-        [infects,infectsFound] = Scouting(speed,amt,vine,t,2);
-        cost = cost + amt*100;
-        if (t-1)/24 > 10
-            cost = cost + 1000;
+minCost = 1000000;
+for amt = 1:12
+    for speed =.0004:.0001:.5
+        for t = 1:length(tspan) 
+            if mod(t,24) == 0 && findSwitch ==0
+                [infects,infectsFound] = Scouting(speed,amt,vine,t,2);
+                cost = cost + amt*100;
+                if (t-1)/24 > 10
+                    cost = cost + 1000;
+                end
+                if infectsFound == 1 && findSwitch == 0
+                    tFound = t;
+                    findSwitch = 1;
+                    disp('Infection Found')
+                end
+            end
         end
-        if infectsFound == 1 && findSwitch == 0
-            tFound = t;
-            findSwitch = 1;
-            disp('Infection Found')
+        if cost<minCost
+            minCost = cost
+            optAmt = amt
+            optSpeed = speed
         end
+        cost = 0;
     end
 end
-
+disp(tFound/24)
 
 
 function [infects,infectsFound] = Scouting(speed,amt,vine,t,opts)
@@ -41,7 +50,7 @@ function [infects,infectsFound] = Scouting(speed,amt,vine,t,opts)
             currLoc = [0,0];
             while distUsed < distMax && infectsFound ~= 1
                 RandSearch = randi(NpX*NpY);
-                fprintf('day:%i (%i,%i)\n',round(t/24),vine(RandSearch).X+.5,vine(RandSearch).Y+.5)
+                %fprintf('day:%i (%i,%i)\n',round(t/24),vine(RandSearch).X+.5,vine(RandSearch).Y+.5)
                 distUsed = distUsed + sqrt((vine(RandSearch).X - currLoc(1))^2 + (vine(RandSearch).Y - currLoc(2))^2);
                 if distUsed > distMax
                     break
