@@ -13,8 +13,8 @@ global NpX NpY Nsteps
 % set simulation constants
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Global domain constants (apply everywhere) %%%%%%%%%%%%%%%%%
-NpX = 10;     %number of plants in the X-direction
-NpY = 10;     %number of plants in the Y-direction
+NpX = 50;     %number of plants in the X-direction
+NpY = 50;     %number of plants in the Y-direction
 Nsteps = length(T); %number of time steps for integration
 
 %%%%%%%%%%%%%%%%%%%%%%%%% Global plant parameters %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,7 +71,7 @@ vine(RandV).L(1) = 0.25^2/4*pi/A;
 
 % call the pathogen function
 tic
-[vine,cost,infects,tFound]=PathogenGrowth_2D(vine,beta_max,mu_L_min,mu_I,A,eta,kappa,xi,Gamma,...
+[vine]=PathogenGrowth_2D(vine,beta_max,mu_L_min,mu_I,A,eta,kappa,xi,Gamma,...
     alpha,T,U,V,tspan);
 toc 
 
@@ -115,8 +115,8 @@ hold off
 % if NpX == 50 && NpY == 50
 %     save("VineData.mat","vine")
 % end
-cdata = zeros(10,10,62);
-for i = 1:100
+cdata = zeros(NpX,NpY,62);
+for i = 1:(NpX*NpY)
     cdata(vine(i).X + 0.5,vine(i).Y + 0.5,:) = vine(i).I(1:24:1465);
 end
 figure
